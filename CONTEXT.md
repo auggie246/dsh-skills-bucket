@@ -17,5 +17,11 @@ A supporting file shipped beside `SKILL.md` (for example, a verbatim copy of an 
 **Upstream source**:
 An external document a skill is derived from, such as the standard-readme spec or an awesome-copilot prompt.
 
+**Bundle**:
+This repository packaged as an npm package installable into a DSH profile with `dsh plugin --profile <name> add <package>`; it ships a Cordis patch (`cordis.patch.yml`) that mounts the host row.
+
+**Runtime skill**:
+A skill registered on the skill registry by the bundle's host code, instead of a file the filesystem provider discovers. Runtime skills outrank same-named user-directory copies.
+
 **Install**:
-Copying a skill folder from `skills/` into the DSH skills directory (`${DSH_HOME:-$HOME/.dsh}/skills/`) via `install.sh`. Re-installing replaces the existing copy; it never merges.
+Two mechanisms exist. `install.sh` copies a skill folder into the DSH skills directory (`${DSH_HOME:-$HOME/.dsh}/skills/`); re-installing replaces the copy, never merges. `dsh plugin add` installs the bundle into a profile; its runtime skills then shadow the file copies.
