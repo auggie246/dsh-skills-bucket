@@ -1,0 +1,7 @@
+# Bundle patch for dsh-skills-bucket: inserts the host row into the profile
+# tree. `dsh plugin --profile web add <this repo>` appends this bundle to
+# dsh.profile.bundles automatically. Host-only bundle: no dsh.client block,
+# no client roster entry.
+- insert:
+    - id: skills-bucket
+      name: "dsh-skills-bucket"

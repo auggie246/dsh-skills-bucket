@@ -1,0 +1,43 @@
+{
+  "name": "dsh-skills-bucket",
+  "description": "DSH plugin bundle serving this repository's skills as runtime skills.",
+  "version": "0.1.0",
+  "type": "module",
+  "author": "auggie246",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/auggie246/dsh-skills-bucket.git"
+  },
+  "bugs": {
+    "url": "https://github.com/auggie246/dsh-skills-bucket/issues"
+  },
+  "homepage": "https://github.com/auggie246/dsh-skills-bucket#readme",
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "cordis",
+    "plugin",
+    "skills"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  },
+  "files": [
+    "lib/",
+    "skills/",
+    "cordis.patch.yml"
+  ],
+  "scripts": {
+    "test": "node scripts/smoke.mjs"
+  }
+}
