@@ -31,7 +31,14 @@ The bundle does two things:
 
 ## Background
 
-Matt Pocock's [skills repo](https://github.com/mattpocock/skills) is built for other agent runtimes. This bundle ports it to DSH in three decisions, each recorded as an ADR:
+This repo is a home for agent skills for DeepSeek Harness (DSH), installable into a profile with one command. Skills live in `skills/`, one directory per skill, and the bundle serves all of them as runtime skills.
+
+The catalog is a mix of two kinds of source:
+
+- **Authored here** — skills written in this repo for DSH. Today that is one skill, `create-readme`.
+- **Synced from upstream** — skills vendored from an external repo at a pinned release tag, patched for DSH. The sync machinery takes any upstream repo; today it sources 25 skills from [mattpocock/skills](https://github.com/mattpocock/skills).
+
+Three decisions shape how the bundle works, each recorded as an ADR:
 
 - **Runtime registration over file copy** — the plugin registers skills directly on the skill registry at host start. A package upgrade replaces them on restart; removing the package removes them. See [ADR-0002](docs/adr/0002-runtime-registration-over-file-copy.md).
 - **Vendored upstream snapshot** — `sync-upstream.mjs` pulls a pinned release tag, applies overlay patches, and flattens the chosen categories into `skills/`. The tag pin makes a rebuild of the same bundle version reproduce the same skills. See [ADR-0003](docs/adr/0003-vendored-upstream-snapshot.md).
