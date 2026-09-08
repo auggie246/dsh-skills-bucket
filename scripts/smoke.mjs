@@ -2,6 +2,7 @@
 // assert every bundled skill registers with parsed frontmatter and a body
 // free of the frontmatter block.
 import assert from 'node:assert'
+import { readFileSync } from 'node:fs'
 
 import { apply } from '../lib/index.js'
 
@@ -31,6 +32,17 @@ for (const skill of registered) {
 
 const createReadme = registered.find((skill) => skill.name === 'create-readme')
 assert.ok(createReadme.content.includes('## Task'), 'create-readme body holds the task section')
+
+// Synced snapshot: the lock lists what sync-upstream vendored; every locked
+// skill must register, and a patched skill must carry the DSH note.
+const lock = JSON.parse(readFileSync(new URL('../upstream.lock.json', import.meta.url), 'utf8'))
+assert.ok(lock.skills.length > 0, 'lock records synced skills')
+for (const name of lock.skills) {
+  assert.ok(names.includes(name), `locked skill ${name} registers`)
+}
+assert.strictEqual(names.length, lock.skills.length + 1, `exactly the lock plus create-readme registers (got ${names.length})`)
+const grilling = registered.find((skill) => skill.name === 'grilling')
+assert.ok(grilling.content.includes('DSH note: asking the user'), 'grilling carries the DSH ask-user note')
 
 assert.deepStrictEqual(warnings, [], `no warnings during registration (got: ${warnings.join(' | ')})`)
 console.log(`ok: registered ${names.join(', ')}`)
