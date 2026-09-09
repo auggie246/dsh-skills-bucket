@@ -123,45 +123,18 @@ The smoke test runs the plugin's `apply()` against a stub skill registry and ass
 
 ## Skills
 
-32 skills ship in the bundle. 31 are synced from two upstreams — 25 from [mattpocock/skills](https://github.com/mattpocock/skills), 6 from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail); `create-readme` is authored in this repo.
+32 skills ship in the bundle, from three collections:
 
-| Skill | Description | Source |
+| Collection | Focus | Skills |
 | --- | --- | --- |
-| [ask-matt](skills/ask-matt) | Ask which skill or flow fits your situation. A router over the skills in this repo. | synced |
-| [codebase-design](skills/codebase-design) | Shared vocabulary for designing deep modules: interfaces, seams, deepening opportunities, testability. | synced |
-| [code-review](skills/code-review) | Review changes since a fixed point along two axes — standards and spec — in parallel sub-agents. | synced |
-| [create-readme](skills/create-readme) | Create or rewrite a standards-compliant `README.md` for the current project. | authored |
-| [diagnosing-bugs](skills/diagnosing-bugs) | Diagnosis loop for hard bugs and performance regressions. | synced |
-| [domain-modeling](skills/domain-modeling) | Build and sharpen a project's domain model; record architectural decisions. | synced |
-| [grilling](skills/grilling) | Grill the user relentlessly about a plan, decision, or idea. | synced, patched |
-| [grill-me](skills/grill-me) | A relentless interview to sharpen a plan or design. | synced |
-| [grill-with-docs](skills/grill-with-docs) | A relentless interview that also creates docs (ADRs and glossary) as it goes. | synced |
-| [handoff](skills/handoff) | Compact the current conversation into a handoff document for another agent. | synced |
-| [implement](skills/implement) | Implement a piece of work based on a spec or set of tickets. | synced |
-| [improve-codebase-architecture](skills/improve-codebase-architecture) | Scan a codebase for deepening opportunities, present them as a visual HTML report. | synced |
-| [ponytail](skills/ponytail) | Lazy senior dev mode: the simplest solution that works, with lite/full/ultra intensity. | synced |
-| [ponytail-audit](skills/ponytail-audit) | Whole-repo audit for over-engineering: a ranked list of what to delete. | synced |
-| [ponytail-debt](skills/ponytail-debt) | Harvest `ponytail:` shortcut comments into a tracked ledger. | synced |
-| [ponytail-gain](skills/ponytail-gain) | Measured-impact scoreboard from ponytail's published benchmark medians. | synced |
-| [ponytail-help](skills/ponytail-help) | Quick-reference card for ponytail modes and skills. | synced |
-| [ponytail-review](skills/ponytail-review) | Diff review for over-engineering only: one line per finding. | synced |
-| [prototype](skills/prototype) | Build a throwaway prototype to answer a design question. | synced |
-| [research](skills/research) | Investigate a question against high-trust primary sources; capture findings as a Markdown file. | synced |
-| [resolving-merge-conflicts](skills/resolving-merge-conflicts) | Resolve an in-progress git merge or rebase conflict. | synced |
-| [setup-matt-pocock-skills](skills/setup-matt-pocock-skills) | Configure a repo for the engineering skills: issue tracker, triage labels, domain docs. | synced |
-| [tdd](skills/tdd) | Test-driven development: red-green-refactor, mocking, integration tests. | synced |
-| [teach](skills/teach) | Teach the user a new skill or concept, within this workspace. | synced |
-| [to-questionnaire](skills/to-questionnaire) | Turn a decision you cannot answer into a questionnaire for someone else. | synced |
-| [to-spec](skills/to-spec) | Turn the current conversation into a spec and publish it to the issue tracker. | synced |
-| [to-tickets](skills/to-tickets) | Break a plan or spec into tracer-bullet tickets with blocking edges. | synced |
-| [triage](skills/triage) | Move issues and external PRs through a state machine of triage roles. | synced |
-| [wait-what](skills/wait-what) | Stop. That last message did not land — re-pitch it. | synced |
-| [wayfinder](skills/wayfinder) | Plan a huge chunk of work as a shared map of decision tickets; resolve one at a time. | synced |
-| [wizard](skills/wizard) | Generate an interactive bash wizard for steps only a human can perform. | synced |
-| [writing-for-agents](skills/writing-for-agents) | Write documents for agents: skills, `AGENTS.md`, `CLAUDE.md`. | synced |
+| [mattpocock/skills](https://github.com/mattpocock/skills) | Engineering and productivity: code review, TDD, debugging, domain modeling, spec and ticket flows, triage, research. | 25 |
+| [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Lazy senior dev mode: the simplest solution that works, plus repo audit, diff review, and debt tracking. | 6 |
+| Authored here | [`create-readme`](skills/create-readme): standards-compliant `README.md` authoring. | 1 |
+
+Every synced skill is vendored at a pinned release tag — see [Background](#background) for how sync works. Browse [skills/](skills/) for the full list of skill directories.
 
 > [!TIP]
-> "patched" means an [overlay patch](https://github.com/auggie246/dsh-mattpocock-skills) appends a "DSH note: asking the user" section, rerouting the skill's ask-the-user moments through the `ask_user_question` tool.
+> 13 of the mattpocock skills carry an [overlay patch](https://github.com/auggie246/dsh-mattpocock-skills): it appends a "DSH note: asking the user" section, rerouting the skill's ask-the-user moments through the `ask_user_question` tool.
 
 ## Maintainers
 
