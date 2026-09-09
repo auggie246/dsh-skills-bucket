@@ -37,3 +37,6 @@ An upstream release tag recorded in `upstream.lock.json`, one per sync source. T
 
 **Sync**:
 `scripts/sync-upstream.mjs`: pulls each targeted sync source's pinned release tag, applies its overlay patches, folds multi-line frontmatter descriptions into single lines, flattens the discovered skills into `skills/`, and rewrites `upstream.lock.json`. A bare re-run covers every source at its locked tag; `--repo` targets one source; `--latest-tag` moves a pin.
+
+**Ponytail default mode**:
+The level the bundle's `ponytail` skill starts at, resolved at host start with the upstream hook contract: `PONYTAIL_DEFAULT_MODE`, then `defaultMode` in the ponytail config file, then `full`. A non-full level is written into the vendored skill at registration; `off` skips the mode skill's registration.

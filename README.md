@@ -24,6 +24,7 @@ The bundle does two things:
   - [Install the bundle](#install-the-bundle)
   - [Copy chosen skills](#copy-chosen-skills)
   - [Sync from upstream](#sync-from-upstream)
+  - [Ponytail default mode](#ponytail-default-mode)
   - [Verify](#verify)
 - [Skills](#skills)
 - [Maintainers](#maintainers)
@@ -112,6 +113,24 @@ node scripts/sync-upstream.mjs --patches <dir>                  # use local patc
 ```
 
 The bundle pins release tags only — never a branch or a bare commit. A flat-layout upstream (one `skills/<name>/SKILL.md` level, like ponytail) needs no categories; a category-nested one (like mattpocock's) lists them. Multi-line frontmatter descriptions are folded into single lines at sync time, so every vendored skill parses.
+
+### Ponytail default mode
+
+The bundle resolves ponytail's default level at host start, with the same contract as the upstream hooks ([ADR-0005](docs/adr/0005-upstream-ponytail-config-over-settings-namespace.md)):
+
+1. The `PONYTAIL_DEFAULT_MODE` environment variable (`off|lite|full|ultra`)
+2. `defaultMode` in `~/.config/ponytail/config.json` (honors `XDG_CONFIG_HOME`; BOM-tolerant)
+3. `full`
+
+A non-full level is written into the vendored skill at registration, so invoking ponytail starts at that level; saying "ponytail ultra" still overrides it per session. `off` skips the `ponytail` mode skill entirely; the five one-shot skills stay. Changes apply on harness restart.
+
+```sh
+export PONYTAIL_DEFAULT_MODE=ultra   # in the harness's environment
+```
+
+```json
+{ "defaultMode": "lite" }
+```
 
 ### Verify
 
