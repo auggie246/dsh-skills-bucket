@@ -33,16 +33,31 @@ for (const skill of registered) {
 const createReadme = registered.find((skill) => skill.name === 'create-readme')
 assert.ok(createReadme.content.includes('## Task'), 'create-readme body holds the task section')
 
-// Synced snapshot: the lock lists what sync-upstream vendored; every locked
-// skill must register, and a patched skill must carry the DSH note.
+// Synced snapshot: the lock's sources list what sync-upstream vendored; every
+// locked skill must register, and a patched skill must carry the DSH note.
 const lock = JSON.parse(readFileSync(new URL('../upstream.lock.json', import.meta.url), 'utf8'))
-assert.ok(lock.skills.length > 0, 'lock records synced skills')
-for (const name of lock.skills) {
+const sources = lock.sources ?? []
+assert.ok(sources.length >= 2, `lock records at least two sync sources (got: ${sources.map((s) => s.repo).join(', ')})`)
+const locked = sources.flatMap((source) => source.skills)
+assert.ok(locked.length > 0, 'lock records synced skills')
+for (const name of locked) {
   assert.ok(names.includes(name), `locked skill ${name} registers`)
 }
-assert.strictEqual(names.length, lock.skills.length + 1, `exactly the lock plus create-readme registers (got ${names.length})`)
+assert.strictEqual(names.length, locked.length + 1, `exactly the lock plus create-readme registers (got ${names.length})`)
 const grilling = registered.find((skill) => skill.name === 'grilling')
 assert.ok(grilling.content.includes('DSH note: asking the user'), 'grilling carries the DSH ask-user note')
+
+// Ponytail source: the upstream ships multi-line YAML block-scalar
+// descriptions; the sync must have folded them into single lines so the
+// frontmatter parser reads a real trigger instead of '>'.
+const ponytail = registered.find((skill) => skill.name === 'ponytail')
+assert.ok(ponytail !== undefined, 'ponytail registers')
+assert.ok(!ponytail.description.startsWith('>'), 'ponytail description is not the unfolded block scalar')
+assert.ok(ponytail.description.length > 20, 'ponytail description is a real folded trigger')
+assert.ok(ponytail.description.includes('lazy'), 'ponytail description keeps the lazy trigger words')
+for (const name of ['ponytail-audit', 'ponytail-debt', 'ponytail-gain', 'ponytail-help', 'ponytail-review']) {
+  assert.ok(names.includes(name), `ponytail skill ${name} registers`)
+}
 
 assert.deepStrictEqual(warnings, [], `no warnings during registration (got: ${warnings.join(' | ')})`)
 console.log(`ok: registered ${names.join(', ')}`)

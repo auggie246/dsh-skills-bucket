@@ -3,17 +3,17 @@
 DSH plugin bundle serving this repository's skills as runtime skills.
 
 [![Node](https://img.shields.io/badge/node-%E2%89%A520-blue)](https://nodejs.org)
-[![Skills](https://img.shields.io/badge/skills-26-3fb950)](#skills)
+[![Skills](https://img.shields.io/badge/skills-32-3fb950)](#skills)
 [![Issues](https://img.shields.io/github/issues/auggie246/dsh-skills-bucket)](https://github.com/auggie246/dsh-skills-bucket/issues)
 
 [Background](#background) · [Install](#install) · [Usage](#usage) · [Skills](#skills) · [Maintainers](#maintainers) · [Thanks](#thanks)
 
-A collection of agent skills for [DeepSeek Harness (DSH)](https://github.com/auggie246/dsh): authored in this repo or synced from upstream, and shipped as runtime skills by the bundle. Install it once, and every skill in it is available to your DSH agent — no per-skill copying, no drift between repo and profile.
+A collection of agent skills for [DeepSeek Harness (DSH)](https://github.com/deepseek-ai/deepseek-harness): authored in this repo or synced from upstream, and shipped as runtime skills by the bundle. Install it once, and every skill in it is available to your DSH agent — no per-skill copying, no drift between repo and profile.
 
 The bundle does two things:
 
-- **Serves 26 skills.** A Node entry point registers each `skills/` directory on the DSH skill registry at host start, so the npm package stays the single source of truth.
-- **Vendored upstream snapshot.** 25 skills come from [mattpocock/skills](https://github.com/mattpocock/skills) at a pinned release tag, patched for DSH; 1 (`create-readme`) is authored here.
+- **Serves 32 skills.** A Node entry point registers each `skills/` directory on the DSH skill registry at host start, so the npm package stays the single source of truth.
+- **Vendored upstream snapshots.** 31 skills come from two upstream repos at pinned release tags, patched for DSH where needed: 25 from [mattpocock/skills](https://github.com/mattpocock/skills) and 6 from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail); 1 (`create-readme`) is authored here.
 
 ## Table of Contents
 
@@ -36,12 +36,12 @@ This repo is a home for agent skills for DeepSeek Harness (DSH), installable int
 The catalog is a mix of two kinds of source:
 
 - **Authored here** — skills written in this repo for DSH. Today that is one skill, `create-readme`.
-- **Synced from upstream** — skills vendored from an external repo at a pinned release tag, patched for DSH. The sync machinery takes any upstream repo; today it sources 25 skills from [mattpocock/skills](https://github.com/mattpocock/skills).
+- **Synced from upstream** — skills vendored from an external repo at a pinned release tag, patched for DSH. The sync machinery takes any upstream repo; today it sources 25 skills from [mattpocock/skills](https://github.com/mattpocock/skills) and 6 from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail).
 
 Three decisions shape how the bundle works, each recorded as an ADR:
 
 - **Runtime registration over file copy** — the plugin registers skills directly on the skill registry at host start. A package upgrade replaces them on restart; removing the package removes them. See [ADR-0002](docs/adr/0002-runtime-registration-over-file-copy.md).
-- **Vendored upstream snapshot** — `sync-upstream.mjs` pulls a pinned release tag, applies overlay patches, and flattens the chosen categories into `skills/`. The tag pin makes a rebuild of the same bundle version reproduce the same skills. See [ADR-0003](docs/adr/0003-vendored-upstream-snapshot.md).
+- **Vendored upstream snapshot** — `sync-upstream.mjs` pulls each recorded upstream's pinned release tag, applies overlay patches, and flattens the discovered skills into `skills/`. The tag pins make a rebuild of the same bundle version reproduce the same skills. See [ADR-0003](docs/adr/0003-vendored-upstream-snapshot.md) and [ADR-0004](docs/adr/0004-multi-upstream-sync.md).
 - **Source precedence** — where a skill combines sources that disagree, task-style scope bans win over structural specs. See [ADR-0001](docs/adr/0001-source-precedence-for-combined-skills.md).
 
 The domain vocabulary — skill, spec resource, upstream source, bundle, runtime skill, overlay patch, pin, sync — is defined in [CONTEXT.md](CONTEXT.md).
@@ -96,18 +96,22 @@ cd dsh-skills-bucket
 
 ### Sync from upstream
 
-`scripts/sync-upstream.mjs` re-syncs the vendored snapshot. Only names recorded in [upstream.lock.json](upstream.lock.json) are ever replaced; `create-readme` is never touched. A stale overlay patch is skipped with a warning, never a broken sync.
+`scripts/sync-upstream.mjs` re-syncs the vendored snapshots. Only names recorded in [upstream.lock.json](upstream.lock.json) are ever replaced; `create-readme` is never touched. A stale overlay patch is skipped with a warning, never a broken sync. A skill name claimed by two upstreams is an error.
 
 ```sh
-node scripts/sync-upstream.mjs                       # re-sync at the locked tag
-node scripts/sync-upstream.mjs --latest-tag          # move the pin to the newest release tag
-node scripts/sync-upstream.mjs --upstream-ref v1.2.3 # sync at an explicit tag
-node scripts/sync-upstream.mjs --patch-ref <ref>     # pin the patch source
-node scripts/sync-upstream.mjs --patches <dir>       # use local patches (offline)
-node scripts/sync-upstream.mjs --categories "<list>" # default: engineering productivity
+node scripts/sync-upstream.mjs                                  # re-sync every source at its pinned tag
+node scripts/sync-upstream.mjs --repo <owner/name>              # re-sync one source at its pinned tag
+node scripts/sync-upstream.mjs --repo <r> --latest-tag          # move that source's pin to the newest release tag
+node scripts/sync-upstream.mjs --repo <r> --upstream-ref v1.2.3 # sync one source at an explicit tag
+node scripts/sync-upstream.mjs --repo <r> --categories "<list>" # override that source's categories
+node scripts/sync-upstream.mjs --add-source <repo> --layout flat|categories \
+     [--categories "<list>"] [--patches-repo <repo>] --upstream-ref <tag>
+                                                                # record a new sync source and sync it
+node scripts/sync-upstream.mjs --patch-ref <ref>                # pin the patch source
+node scripts/sync-upstream.mjs --patches <dir>                  # use local patches (offline)
 ```
 
-The bundle pins release tags only — never a branch or a bare commit.
+The bundle pins release tags only — never a branch or a bare commit. A flat-layout upstream (one `skills/<name>/SKILL.md` level, like ponytail) needs no categories; a category-nested one (like mattpocock's) lists them. Multi-line frontmatter descriptions are folded into single lines at sync time, so every vendored skill parses.
 
 ### Verify
 
@@ -119,7 +123,7 @@ The smoke test runs the plugin's `apply()` against a stub skill registry and ass
 
 ## Skills
 
-26 skills ship in the bundle. 25 are synced from [mattpocock/skills](https://github.com/mattpocock/skills); `create-readme` is authored in this repo.
+32 skills ship in the bundle. 31 are synced from two upstreams — 25 from [mattpocock/skills](https://github.com/mattpocock/skills), 6 from [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail); `create-readme` is authored in this repo.
 
 | Skill | Description | Source |
 | --- | --- | --- |
@@ -135,6 +139,12 @@ The smoke test runs the plugin's `apply()` against a stub skill registry and ass
 | [handoff](skills/handoff) | Compact the current conversation into a handoff document for another agent. | synced |
 | [implement](skills/implement) | Implement a piece of work based on a spec or set of tickets. | synced |
 | [improve-codebase-architecture](skills/improve-codebase-architecture) | Scan a codebase for deepening opportunities, present them as a visual HTML report. | synced |
+| [ponytail](skills/ponytail) | Lazy senior dev mode: the simplest solution that works, with lite/full/ultra intensity. | synced |
+| [ponytail-audit](skills/ponytail-audit) | Whole-repo audit for over-engineering: a ranked list of what to delete. | synced |
+| [ponytail-debt](skills/ponytail-debt) | Harvest `ponytail:` shortcut comments into a tracked ledger. | synced |
+| [ponytail-gain](skills/ponytail-gain) | Measured-impact scoreboard from ponytail's published benchmark medians. | synced |
+| [ponytail-help](skills/ponytail-help) | Quick-reference card for ponytail modes and skills. | synced |
+| [ponytail-review](skills/ponytail-review) | Diff review for over-engineering only: one line per finding. | synced |
 | [prototype](skills/prototype) | Build a throwaway prototype to answer a design question. | synced |
 | [research](skills/research) | Investigate a question against high-trust primary sources; capture findings as a Markdown file. | synced |
 | [resolving-merge-conflicts](skills/resolving-merge-conflicts) | Resolve an in-progress git merge or rebase conflict. | synced |
@@ -160,4 +170,5 @@ The smoke test runs the plugin's `apply()` against a stub skill registry and ass
 ## Thanks
 
 - [Matt Pocock](https://github.com/mattpocock) — the [skills](https://github.com/mattpocock/skills) repo is the upstream source for 25 of the skills in this bundle.
+- [Dietrich Gepert](https://github.com/DietrichGebert) — [ponytail](https://github.com/DietrichGebert/ponytail) is the upstream source for 6 of the skills in this bundle.
 - [Richard Litt](https://github.com/RichardLitt) — the [standard-readme](https://github.com/RichardLitt/standard-readme) spec shapes the `create-readme` skill, and this README.

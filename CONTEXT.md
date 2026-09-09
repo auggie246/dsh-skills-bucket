@@ -29,8 +29,11 @@ Two mechanisms exist. `install.sh` copies a skill folder into the DSH skills dir
 **Overlay patch**:
 A fork-local `.patch` under `patches/` in `auggie246/dsh-mattpocock-skills`; each appends a "DSH note: asking the user" section to one upstream skill, rerouting its ask-the-user moments through the `ask_user_question` tool. A stale overlay patch leaves its skill unpatched.
 
+**Sync source**:
+An upstream repo recorded in `upstream.lock.json`, with its layout (`flat` or category-nested) and optional patch repo. One pin per sync source.
+
 **Pin**:
-The upstream release tag recorded in `upstream.lock.json`. The bundle pins release tags only; a branch or a bare commit is never a pin.
+An upstream release tag recorded in `upstream.lock.json`, one per sync source. The bundle pins release tags only; a branch or a bare commit is never a pin.
 
 **Sync**:
-`scripts/sync-upstream.mjs`: pulls the pinned upstream release tag, applies every overlay patch, flattens the chosen categories into `skills/`, and rewrites `upstream.lock.json`. A bare re-run repeats the locked tag; `--latest-tag` moves the pin.
+`scripts/sync-upstream.mjs`: pulls each targeted sync source's pinned release tag, applies its overlay patches, folds multi-line frontmatter descriptions into single lines, flattens the discovered skills into `skills/`, and rewrites `upstream.lock.json`. A bare re-run covers every source at its locked tag; `--repo` targets one source; `--latest-tag` moves a pin.
