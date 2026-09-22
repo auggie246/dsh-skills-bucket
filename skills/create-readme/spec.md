@@ -1,6 +1,6 @@
 # Specification
 
-> Verbatim copy of the [standard-readme](https://github.com/richardlitt/standard-readme) specification. In this skill, the License and Contributing sections below are overridden by SKILL.md and must not be written.
+> Copy of the [standard-readme](https://github.com/richardlitt/standard-readme) specification, with a note added by this skill: the License and Contributing sections below are overridden by SKILL.md and must not be written. A README from this skill is therefore not fully standard-readme compliant.
 
 A compliant README must satisfy all the requirements listed below.
 

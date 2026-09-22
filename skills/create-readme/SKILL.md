@@ -1,6 +1,6 @@
 ---
 name: create-readme
-description: 'Create or rewrite the README.md for the current project. Use when the user asks for a readme, a project overview page, or an improved or standards-compliant README.'
+description: 'Create or rewrite the README.md for the current project. Use when the user asks for a readme, a project overview page, or an improved README that follows the standard-readme structure.'
 ---
 
 ## Role
@@ -38,7 +38,7 @@ Body:
 
 ## Completion checklist
 
-- [ ] Every applicable `spec.md` requirement is satisfied, including section titles, order, and the Short Description length and placement rules.
+- [ ] Every applicable `spec.md` requirement outside the overridden License and Contributing sections is satisfied, including section titles, order, and the Short Description length and placement rules.
 - [ ] The included sections match the project classification from step 2.
 - [ ] The README contains no License, Contributing, or Changelog section.
 - [ ] Every link in the README resolves.

@@ -148,7 +148,7 @@ The smoke test runs the plugin's `apply()` against a stub skill registry and ass
 | --- | --- | --- |
 | [mattpocock/skills](https://github.com/mattpocock/skills) | Engineering and productivity: code review, TDD, debugging, domain modeling, spec and ticket flows, triage, research. | 25 |
 | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Lazy senior dev mode: the simplest solution that works, plus repo audit, diff review, and debt tracking. | 6 |
-| Authored here | [`create-readme`](skills/create-readme): standards-compliant `README.md` authoring. | 1 |
+| Authored here | [`create-readme`](skills/create-readme): `README.md` authoring from the standard-readme spec. | 1 |
 
 Every synced skill is vendored at a pinned release tag — see [Background](#background) for how sync works. Browse [skills/](skills/) for the full list of skill directories.
 
